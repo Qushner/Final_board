@@ -1,0 +1,10 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h1>Отклик от {{ reply.author }}</h1>
+<h1>на объявление {{ reply.listing.title }}</h1>
+<h1>в категории {{ reply.listing.category }}</h1>
+<h1>текст отклика: {{ reply.text }}</h1>
+<hr>
+ <a href="{{ request.META.HTTP_REFERER }}">Вернуться назад</a>
+{% endblock content %}

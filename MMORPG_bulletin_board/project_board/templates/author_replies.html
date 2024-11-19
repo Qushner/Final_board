@@ -1,0 +1,54 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+   <h1>Мои отклики</h1>
+   <hr>
+   <a href="{% url 'author_list' user.id %}">Вернуться к моим объявлениям</a>
+ <hr>
+   {% if author_replies %}
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        tr:first-child {
+            background-color: green;
+        }
+
+        tr:nth-child(even) {
+            background-color: white;
+        }
+
+        tr:nth-child(odd) {
+            background-color: lightblue;
+        }
+
+        tr:first-child {
+            background-color: green;
+        }
+    </style>
+       <table align="center">
+           <tr>
+               <td width="15%">Объявление</td>
+               <td width="10%">Категория</td>
+               <td width="35%">Текст отклика</td>
+               <td colspan="7">Статус</td>
+           </tr>
+           {% for reply in author_replies %}
+                  <tr>
+                      <td>{{ reply.listing.title }}</td>
+                      <td>{{ reply.listing.get_category_display_ru }}</td>
+                      <td>{{ reply.text }}</td>
+                      {% if reply.status %}
+                        <td>Принят</td>
+                      {% else %}
+                        <td>Еще не принят</td>
+                      {% endif %}
+                  </tr>
+           {% endfor %}
+       </table>
+   {% else %}
+       <h2>Вы пока не откликнулись ни на одно объявление, либо все ваши отклики отклонены!</h2>
+   {% endif %}
+{% endblock content %}
+

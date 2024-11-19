@@ -1,0 +1,33 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+{% if request.user == listing.author or request.user.is_superuser %}
+   <td>
+      <a href="{% url 'listing_edit' listing.id %}">Редактировать</a>
+   </td>
+   <td>/<td>
+   <td>
+     <a href="{% url 'listing_delete' listing.id %}">Удалить</a>
+   </td>
+{% endif %}
+{% if request.user != listing.author and request.user.is_authenticated %}
+    <td>
+      {% if has_user_reply or listing.has_user_reply %}
+        <p>Отклик отправлен</p>
+      {% else %}
+        <a href="{% url 'reply_create' listing.id %}">Откликнуться</a>
+      {% endif %}
+    </td>
+{% endif %}
+<h1>{{ listing.title }}</h1>
+<h1>{{ listing.category }}</h1>
+<h1>{{ listing.text }}</h1>
+{% if listing.image1 %}
+    <img src="{{ listing.image1.url }}" alt="Image 1">
+{% endif %}
+{% if listing.image2 %}
+    <img src="{{ listing.image2.url }}" alt="Image 2">
+{% endif %}
+<hr>
+<a href="/listings/">К объявлениям</a>
+{% endblock content %}

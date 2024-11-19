@@ -1,0 +1,100 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Listings
+{% endblock title %}
+{% load tz %}
+{% block content %}
+   <h1>Все объявления</h1>
+   <h5>{{ time_now|localtime|date:'M d Y' }} {{ time_now|localtime|time:'H:i:s' }}</h5>
+   <hr>
+   {% if user.is_authenticated %}
+   <a href="{% url 'listing_create' %}">Создать объявление</a>
+   {% endif %}
+
+   <hr>
+   {% if listings %}
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        tr:first-child {
+            background-color: green;
+        }
+
+        tr:nth-child(even) {
+            background-color: white;
+        }
+
+        tr:nth-child(odd) {
+            background-color: lightblue;
+        }
+
+        tr:first-child {
+            background-color: green;
+        }
+    </style>
+   <table align="center">
+       <tr>
+           <td width="20%">Автор</td>
+           <td width="15%">Заголовок</td>
+           <td width="10%">Категория</td>
+           <td width="35%">Текст</td>
+           <td colspan="3">Действия</td>
+       </tr>
+       {% for item in has_user_reply %}
+           <tr>
+               <td>{{ item.listing.author }}</td>
+               <td>{{ item.listing.title }}</td>
+               <td>{{ item.listing.get_category_display_ru }}</td>
+               <td>{{ item.listing.text }}</td>
+               <td>
+                   <a href="{% url 'listing_detail' item.listing.id %}">Просмотр</a>
+               </td>
+               {% if request.user == item.listing.author or request.user.is_superuser %}
+               <td>/<td>
+               <td>
+                   <a href="{% url 'listing_edit' item.listing.id %}">Редактировать</a>
+               </td>
+               <td>/<td>
+               <td>
+                   <a href="{% url 'listing_delete' item.listing.id %}">Удалить</a>
+               </td>
+               {% endif %}
+               {% if request.user != item.listing.author and request.user.is_authenticated %}
+                   <td>/<td>
+                   <td>
+                       {% if item.has_reply %}
+                           <p>Отклик отправлен</p>
+                       {% else %}
+                           <a href="{% url 'reply_create' item.listing.id %}">Откликнуться</a>
+                       {% endif %}
+                   </td>
+               {% endif %}
+           </tr>
+       {% endfor %}
+   </table>
+   {% else %}
+       <h2>Объявлений нет!</h2>
+   {% endif %}
+   {% if page_obj.has_previous %}
+       <a href="?page=1">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+{% endblock content %}

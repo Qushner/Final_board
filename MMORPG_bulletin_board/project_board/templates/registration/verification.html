@@ -1,0 +1,18 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+  <h1>Верификация пользователя</h1>
+<form method="post" action="{% url 'verification' pk=pk %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Подтвердить</button>
+</form>
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'flatpages/default.html' %}
+
+{% load tz %}
+{% block content %}
+   <h1>Мои объявления</h1>
+   <h5>{{ time_now|localtime|date:'M d Y' }} {{ time_now|localtime|time:'H:i:s' }}</h5>
+   <hr>
+   <a href="{% url 'listing_create'%}">Создать объявление</a>
+   <hr>
+   <a href="{% url 'reply_action' user.id %}">Отклики на мои объявления</a>
+   <hr>
+   <a href="{% url 'author_replies' user.id %}">Мои отклики</a>
+ <hr>
+   {% if listings %}
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        tr:first-child {
+            background-color: green;
+        }
+
+        tr:nth-child(even) {
+            background-color: white;
+        }
+
+        tr:nth-child(odd) {
+            background-color: lightblue;
+        }
+
+        tr:first-child {
+            background-color: green;
+        }
+    </style>
+       <table align="center">
+           <tr>
+               <td width="15%">Заголовок</td>
+               <td width="10%">Категория</td>
+               <td width="35%">Текст</td>
+               <td colspan="40">Действия</td>
+           </tr>
+           {% for listing in listings %}
+                  <tr>
+
+                      <td>{{ listing.title }}</td>
+                      <td>{{ listing.get_category_display_ru }}</td>
+                      <td>{{ listing.text }}</td>
+                      <td>
+                          <a href="{% url 'listing_detail' listing.id %}">Просмотр</a>
+                      </td>
+                      <td>/<td>
+                      <td>
+                        <a href="{% url 'listing_edit' listing.id %}">Редактировать</a>
+                      </td>
+                      <td>/<td>
+                      <td>
+                        <a href="{% url 'listing_delete' listing.id %}">Удалить</a>
+                      </td>
+                      <td>/<td>
+                      {% if listing.reply_set.all %}
+                      <td>
+                        <a href="{% url 'replies' listing.id %}">Отклики</a>
+                      </td>
+                      {% else %}
+                      <td>
+                        <a>Откликов нет</a>
+                      </td>
+                      {% endif %}
+
+                  </tr>
+           {% endfor %}
+       </table>
+   {% else %}
+       <h2>Объявлений нет!</h2>
+   {% endif %}
+
+{% if page_obj.has_previous %}
+       <a href="?page=1">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+{% endblock content %}

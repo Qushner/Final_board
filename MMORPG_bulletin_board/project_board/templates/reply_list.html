@@ -1,0 +1,90 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+   <h1>Все отклики на объявление "{{listing.title}}"</h1>
+<hr>
+   <a href="{% url 'author_list' user.id %}">Вернуться к моим объявлениям</a>
+   <hr>
+
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        tr:first-child {
+            background-color: green;
+        }
+
+        tr:nth-child(even) {
+            background-color: white;
+        }
+
+        tr:nth-child(odd) {
+            background-color: lightblue;
+        }
+
+        tr:first-child {
+            background-color: green;
+        }
+    </style>
+   <table align="center">
+       <tr>
+           <td width="20%">Отклик от</td>
+           <td width="35%">Текст</td>
+           <td colspan="40">Действия</td>
+       </tr>
+       {% for reply in replies %}
+           <tr>
+               <td>{{ reply.author }}</td>
+               <td>{{ reply.text }}</td>
+               <td>
+                   <a href="{% url 'reply_detail' reply.id %}">Просмотр</a>
+               </td>
+               {% if not reply.status %}
+                <td>/<td>
+                <td>
+                   <a href="{% url 'accept_reply' reply.id %}">Принять</a>
+                </td>
+               <td>/<td>
+                <td>
+                   <a href="{% url 'reject_reply' reply.id %}">Отклонить</a>
+                </td>
+               {% else %}
+               <td>/<td>
+                <td>
+                   <a> Отклик принят </a>
+                </td>
+               <td>/<td>
+                <td>
+                   <a href="{% url 'cancel_reply' reply.id %}">Отмена</a>
+                </td>
+               <td>/<td>
+                <td>
+                   <a href="{% url 'reject_reply' reply.id %}">Отклонить</a>
+                </td>
+
+               {% endif %}
+
+           </tr>
+       {% endfor %}
+   </table>
+   {% if page_obj.has_previous %}
+       <a href="?page=1">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+{% endblock content %}

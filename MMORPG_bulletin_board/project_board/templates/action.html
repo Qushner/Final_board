@@ -1,0 +1,7 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+   <h1 class="text-center">{{ message }} {{ reply }}</h1>
+  <hr>
+  <a href="{{ request.META.HTTP_REFERER }}">Вернуться назад</a>
+{% endblock content %}
